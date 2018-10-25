@@ -1,0 +1,33 @@
+# Based on: https://github.com/jcward/hxtelemetry/blob/27c007e7d777752b34f6c4a9a95fb666d21eb027/.travis.yml
+# Which had a successful docker commit: https://travis-ci.com/jcward/hxtelemetry/builds/89086389
+
+sudo: required
+
+os:
+  - windows
+
+language: shell
+
+before_install:
+  - |
+    env | sort
+    export DOCKER_ROOT=microsoft/windowsservercore:1803
+
+install:
+  - |
+    # - - Setup some docker images - -
+
+    date
+    echo "Before docker"
+    docker run $DOCKER_ROOT /bin/bash -c "dir" && echo "Exit 1 successful"
+    echo "After docker"
+    (docker commit `docker ps -lq` | cut -c8-) > ~/.docker.image.base
+    echo "After docker commit, wrote base image `cat ~/.docker.image.base`"
+
+    echo "Before docker 2"
+    docker run $DOCKER_ROOT /foobar && echo "Exit 2 successful"
+    echo "After docker 2"
+    date
+
+script:
+    date
