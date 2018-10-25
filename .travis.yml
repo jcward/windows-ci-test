@@ -18,19 +18,20 @@ install:
     # - - Setup some docker images - -
 
     date
-    echo "Before docker"
-    docker run $DOCKER_ROOT  -c "dir" && echo "Docker 1 successful"
+    echo "Before docker, /bin/bash"
+    docker run $DOCKER_ROOT /bin/bash -c "dir" && echo "Docker 1 successful"
     echo "After docker"
     (docker commit `docker ps -lq` | cut -c8-) > ~/.docker.image.base
     echo "After docker commit, wrote base image `cat ~/.docker.image.base`"
 
     echo "Before docker 2, testing volume mounting"
-    docker run $DOCKER_ROOT -v $TRAVIS_BUILD_DIR:C:\repo "dir C:\repo" && echo "Docker 2 successful"
+    docker run $DOCKER_ROOT -v $TRAVIS_BUILD_DIR:C:\repo dir C:\repo
     echo "After docker 2"
 
-    echo "Before docker 3"
+    echo "Before docker 3/4, return codes?"
     docker run $DOCKER_ROOT /intentional_failure && echo "Docker3 2 successful"
-    echo "After docker 3"
+    docker run $DOCKER_ROOT "dotnet --info" && echo "Docker3 2 successful"
+    echo "After docker 3/4"
 
     date
 
