@@ -19,14 +19,19 @@ install:
 
     date
     echo "Before docker"
-    docker run $DOCKER_ROOT /bin/bash -c "dir" && echo "Exit 1 successful"
+    docker run $DOCKER_ROOT  -c "dir" && echo "Docker 1 successful"
     echo "After docker"
     (docker commit `docker ps -lq` | cut -c8-) > ~/.docker.image.base
     echo "After docker commit, wrote base image `cat ~/.docker.image.base`"
 
-    echo "Before docker 2"
-    docker run $DOCKER_ROOT /foobar && echo "Exit 2 successful"
+    echo "Before docker 2, testing volume mounting"
+    docker run $DOCKER_ROOT -v $TRAVIS_BUILD_DIR:C:\repo "dir C:\repo" && echo "Docker 2 successful"
     echo "After docker 2"
+
+    echo "Before docker 3"
+    docker run $DOCKER_ROOT /intentional_failure && echo "Docker3 2 successful"
+    echo "After docker 3"
+
     date
 
 script:
